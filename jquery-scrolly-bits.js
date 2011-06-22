@@ -10,7 +10,7 @@ jQuery.fn.doAwesomeScrollingThing = function() {
 
       if (target.exists()) {
         var target_top = target.offset().top
-        $('html, body').animate({ scrollTop: target_top - ($('.nav.flat').height() - 20) }, 500, function() {
+        $('html, body').animate({ scrollTop: target_top }, 500, function() {
           document.location.hash = hash
         })
         event.preventDefault()
