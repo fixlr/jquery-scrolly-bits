@@ -3,9 +3,6 @@ jQuery.fn.exists = function() {
 }
 
 jQuery.fn.doAwesomeScrollingThing = function() {
-  $('body').css('margin-bottom', $(window).height())
-  $('.nav').isOmniPresentAllSeeingNav()
-
   return this.each(function() {
     $(this).click(function(event) {
       hash = this.href.split('#')[1]
