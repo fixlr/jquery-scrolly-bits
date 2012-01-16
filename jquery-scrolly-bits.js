@@ -11,7 +11,7 @@
 
         $('html, body').animate({ scrollTop: target_top }, 500, function() {
           document.location.hash = hash;
-        })
+        });
         event.preventDefault();
       }
     });
