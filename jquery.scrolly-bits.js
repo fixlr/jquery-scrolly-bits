@@ -18,15 +18,37 @@
   }
 
   $.fn.copyNav = function(options) {
-    var settings = $.extend({
+    var didScroll, settings, flatMenu;
+
+    settings = $.extend({
       'navClass': 'flat'
     }, options);
 
-    return this.first()
+    flatMenu = this.first()
       .clone()
       .appendTo('body')
       .addClass(settings['navClass'])
       .hide();
+
+    $(window).scroll(function() {
+      didScroll = true;
+    });
+
+    setInterval(function() {
+      if ( didScroll ) {
+        didScroll = false;
+        windowPosition = $(window).scrollTop();
+        menuVisible = flatMenu.is(':visible');
+
+        if (windowPosition > 500 && !menuVisible) {
+          flatMenu.fadeIn();
+        }
+        else if (windowPosition < 500 && menuVisible) {
+          flatMenu.fadeOut();
+        }
+        flatMenu.setCurrentSection();
+      }
+    }, 250);
   }
 
   $.fn.setCurrentSection = function() {
@@ -44,20 +66,6 @@
       });
     }
   }
-
-  $(window).scroll(function() {
-    var menu = $('.nav.flat'),
-        windowPosition = $(window).scrollTop(),
-        menuVisible = menu.is(':visible');
-
-    if (windowPosition > 500 && !menuVisible) {
-      menu.fadeIn();
-    }
-    else if (windowPosition < 500 && menuVisible) {
-      menu.fadeOut();
-    }
-    menu.setCurrentSection();
-  });
 
   $.fn.exists = function() {
     return (this.length > 0);
