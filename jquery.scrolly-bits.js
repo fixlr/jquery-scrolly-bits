@@ -1,16 +1,23 @@
 (function( $ ) {
+
   $.fn.scrollyBits = function() {
-    var target, target_top, hash;
+    var target, target_top, hash, scrolling_offset, bottom_padding;
+
+    bottom_padding = $(window).height() - $('.section').filter(':last').height();
+    if (bottom_padding > 0) {
+      $('body').css('padding-bottom', bottom_padding); // need to add bottom-padding so you can actually scroll all the way to the last .section
+    }
 
     return $(this).click(function(event) {
       hash = getLinkTarget(this);
       target = $('#' + hash);
+      scrolling_offset = $('#siteheader').height() + $('.nav.flat').height(); // if you have these, their heights are subtracted from the scrolling distance.  If you don't have these, scrolling_offset = 0.
 
       if (target.exists()) {
-        target_top = target.offset().top;
+        target_top = target.offset().top - scrolling_offset;
 
         $('html, body').animate({ scrollTop: target_top }, 500, function() {
-          document.location.hash = hash;
+          document.location.hash = '_' + hash; // prefixing the hash prevents Firefox and IE from scrolling to the actual hash, thereby obeying the calculated target_top
         });
         event.preventDefault();
       }
@@ -18,7 +25,8 @@
   }
 
   $.fn.copyNav = function(options) {
-    var didScroll, settings, flatMenu;
+    var didScroll, settings, flatMenu, intro_height;
+    intro_height = $('.intro').height();
 
     settings = $.extend({
       'navClass': 'flat'
@@ -40,10 +48,10 @@
         windowPosition = $(window).scrollTop();
         menuVisible = flatMenu.is(':visible');
 
-        if (windowPosition > 500 && !menuVisible) {
+        if (windowPosition > intro_height && !menuVisible) {
           flatMenu.fadeIn();
         }
-        else if (windowPosition < 500 && menuVisible) {
+        else if (windowPosition < intro_height && menuVisible) {
           flatMenu.fadeOut();
         }
         flatMenu.setCurrentSection();
@@ -52,13 +60,14 @@
   }
 
   $.fn.setCurrentSection = function() {
-    var target;
+    var target, scrolling_offset;
+    scrolling_offset = $('#siteheader').height() + $('.nav.flat').height();
 
     if (this.is(':visible')) {
       this.find('a').each(function() {
         target = $('#' + getLinkTarget(this));
 
-        if ((target.offset().top + target.height()) > ($(window).scrollTop() + 50)) {
+        if ((target.offset().top + target.height()) > ($(window).scrollTop() + scrolling_offset)) {
           $('.nav.flat a').removeClass('current');
           $(this).addClass('current');
           return false;
